@@ -15,7 +15,6 @@ import java.util.Collection;
 import java.util.List;
 
 @Data
-@RequiredArgsConstructor
 @Builder
 public class UserEntity implements UserDetails {
     @Id
