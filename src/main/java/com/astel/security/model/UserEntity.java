@@ -1,10 +1,7 @@
 package com.astel.security.model;
 
 import com.sun.istack.internal.Nullable;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,6 +13,10 @@ import java.util.List;
 
 @Data
 @Builder
+@Entity
+@Table(name = "user")
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserEntity implements UserDetails {
     @Id
     @Column(name = "id")

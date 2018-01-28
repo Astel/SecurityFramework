@@ -1,8 +1,10 @@
 package com.astel.security.logging;
 
 import lombok.extern.log4j.Log4j;
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.After;
+import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
 
@@ -10,10 +12,8 @@ import org.springframework.stereotype.Component;
 @Component
 @Log4j
 public class Logging {
-    @After("target(com.astel.security.SecuredService)")
-    public Object securedMethodsLogging(ProceedingJoinPoint pjp) throws Throwable {
-        Object retVal = pjp.proceed();
-        log.info(pjp.getTarget().getClass().getName() + " " + pjp.getSignature().getName());
-        return retVal;
+    @After(value = "@annotation(com.astel.security.services.SecuredService)")
+    public void after(JoinPoint joinPoint) throws Throwable {
+        log.info(joinPoint.getTarget().getClass().getName() + " " + joinPoint.getSignature().getName());
     }
 }

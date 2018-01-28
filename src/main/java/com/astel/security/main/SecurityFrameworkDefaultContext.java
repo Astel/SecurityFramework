@@ -1,7 +1,7 @@
-package com.astel.security.config;
+package com.astel.security.main;
 
+import com.astel.security.dao.UserRepository;
 import com.astel.security.services.UserDetailsServiceImpl;
-import lombok.RequiredArgsConstructor;
 import nl.ctrlaltdev.harbinger.DefaultHarbingerContext;
 import nl.ctrlaltdev.harbinger.HarbingerContext;
 import nl.ctrlaltdev.harbinger.evidence.EvidenceCollector;
@@ -11,27 +11,20 @@ import nl.ctrlaltdev.harbinger.response.ResponseDecider;
 import nl.ctrlaltdev.harbinger.response.SimpleResponseDecider;
 import nl.ctrlaltdev.harbinger.rule.DetectionRule;
 import nl.ctrlaltdev.harbinger.rule.DetectionRuleLoader;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScans;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.access.ExceptionTranslationFilter;
-import org.springframework.security.web.access.channel.ChannelProcessingFilter;
-import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 
+import javax.sql.DataSource;
 import java.util.Set;
 
-@Configuration
-@EnableWebSecurity
-@RequiredArgsConstructor
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    private final UserDetailsServiceImpl userDetailsService;
-
+//@Configuration
+//@ConditionalOnClass(WebSecurityConfigurerAdapterImpl.class)
+public class SecurityFrameworkDefaultContext {
     @Bean
     @ConditionalOnMissingBean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
@@ -64,35 +57,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public DaoAuthenticationProvider createDaoAuthenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
 
-        provider.setUserDetailsService(userDetailsService);
+        //provider.setUserDetailsService(userDetailsService());
         provider.setPasswordEncoder(bCryptPasswordEncoder());
         return provider;
     }
 
-    @Override
-    public void configure(WebSecurity web) throws Exception {
-        web
-                .ignoring()
-                .antMatchers("/resources/**"); // #3
-    }
+//    @Bean
+//    @ConditionalOnMissingBean
+//    public UserDetailsServiceImpl userDetailsService(){
+//        return new UserDetailsServiceImpl(userRepository());
+//    }
+//
+//    @Bean
+//    @ConditionalOnMissingBean
+//    public UserDetailsServiceImpl userRepository(){
+//        return new UserDetailsServiceImpl(userRepository());
+//    }
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        super.configure(http);
-        http
-                //filter
-                .addFilterBefore(httpEvidenceFilter(harbingerContext()), ExceptionTranslationFilter.class)
-                .addFilterBefore(blacklistFilter(harbingerContext()), ChannelProcessingFilter.class)
-                .csrf().disable();
-                //authorization
-//                .exceptionHandling()
-//                .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"))
-//                .accessDeniedPage("/error")
-//                .and().authorizeRequests()
-//                .antMatchers(
-//                        "/login",
-//                        "/login/**",
-//                        "/error/**")
-//                .permitAll();
-    }
 }
