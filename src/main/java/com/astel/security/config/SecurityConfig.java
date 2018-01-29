@@ -22,7 +22,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.access.ExceptionTranslationFilter;
 import org.springframework.security.web.access.channel.ChannelProcessingFilter;
-import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 
 import java.util.Set;
 
@@ -82,17 +81,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 //filter
                 .addFilterBefore(httpEvidenceFilter(harbingerContext()), ExceptionTranslationFilter.class)
-                .addFilterBefore(blacklistFilter(harbingerContext()), ChannelProcessingFilter.class)
-                .csrf().disable();
-                //authorization
-//                .exceptionHandling()
-//                .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"))
-//                .accessDeniedPage("/error")
-//                .and().authorizeRequests()
-//                .antMatchers(
-//                        "/login",
-//                        "/login/**",
-//                        "/error/**")
-//                .permitAll();
+                .addFilterBefore(blacklistFilter(harbingerContext()), ChannelProcessingFilter.class);
     }
 }

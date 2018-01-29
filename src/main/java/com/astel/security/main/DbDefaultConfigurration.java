@@ -23,8 +23,8 @@ import java.util.Properties;
 import java.util.Random;
 
 @Log4j
-//@ConditionalOnClass(DataSource.class)
-//@PropertySource("classpath:h2.properties")
+@ConditionalOnClass(DataSource.class)
+@PropertySource("classpath:h2.properties")
 public class DbDefaultConfigurration {
     @Autowired
     private Environment env;
@@ -55,7 +55,7 @@ public class DbDefaultConfigurration {
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         final LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource());
-        em.setPackagesToScan("com.baeldung.autoconfiguration.example");
+        em.setPackagesToScan("com.astel.security.model");
         em.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
         if (additionalProperties() != null) {
             em.setJpaProperties(additionalProperties());
@@ -76,9 +76,9 @@ public class DbDefaultConfigurration {
     final Properties additionalProperties() {
         final Properties hibernateProperties = new Properties();
 
-        hibernateProperties.setProperty("hibernate.hbm2ddl.auto", env.getProperty("mysql-hibernate.hbm2ddl.auto"));
-        hibernateProperties.setProperty("hibernate.dialect", env.getProperty("mysql-hibernate.dialect"));
-        hibernateProperties.setProperty("hibernate.show_sql", env.getProperty("mysql-hibernate.show_sql") != null ? env.getProperty("mysql-hibernate.show_sql") : "false");
+        hibernateProperties.setProperty("hibernate.hbm2ddl.auto", env.getProperty("h2-hibernate.hbm2ddl.auto"));
+        hibernateProperties.setProperty("hibernate.dialect", env.getProperty("h2-hibernate.dialect"));
+        hibernateProperties.setProperty("hibernate.show_sql", env.getProperty("h2-hibernate.show_sql") != null ? env.getProperty("h2-hibernate.show_sql") : "false");
 
         return hibernateProperties;
     }
@@ -99,7 +99,6 @@ public class DbDefaultConfigurration {
                     .orElseGet(() -> ConditionOutcome.noMatch(message.didNotFind("class", "classes")
                             .items(ConditionMessage.Style.NORMAL, Arrays.asList(CLASS_NAMES))));
         }
-
     }
 
     private String randomString() {
