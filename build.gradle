@@ -43,7 +43,6 @@ dependencies {
             'org.springframework.boot:spring-boot-starter-data-jpa',
             'org.springframework.boot:spring-boot-starter-security',
             'org.springframework.boot:spring-boot-starter-web',
-            'org.springframework.boot:spring-boot-starter-actuator',
 
             'com.github.ctrl-alt-dev:harbinger:v1.0.0',
 

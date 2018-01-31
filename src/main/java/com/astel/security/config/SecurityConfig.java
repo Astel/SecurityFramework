@@ -11,6 +11,8 @@ import nl.ctrlaltdev.harbinger.response.ResponseDecider;
 import nl.ctrlaltdev.harbinger.response.SimpleResponseDecider;
 import nl.ctrlaltdev.harbinger.rule.DetectionRule;
 import nl.ctrlaltdev.harbinger.rule.DetectionRuleLoader;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,6 +30,7 @@ import java.util.Set;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@ConditionalOnClass
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserDetailsServiceImpl userDetailsService;
 

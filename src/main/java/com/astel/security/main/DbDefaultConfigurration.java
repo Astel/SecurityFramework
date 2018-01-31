@@ -3,10 +3,7 @@ package com.astel.security.main;
 import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.*;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ConditionContext;
-import org.springframework.context.annotation.Conditional;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
 import org.springframework.core.type.AnnotatedTypeMetadata;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -25,6 +22,7 @@ import java.util.Random;
 @Log4j
 @ConditionalOnClass(DataSource.class)
 @PropertySource("classpath:h2.properties")
+@Configuration
 public class DbDefaultConfigurration {
     @Autowired
     private Environment env;
@@ -33,7 +31,7 @@ public class DbDefaultConfigurration {
     @ConditionalOnProperty(
             name = "useh2",
             havingValue = "local")
-    @ConditionalOnMissingBean
+    //@ConditionalOnMissingBean
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         String username = "dbuser";
@@ -51,7 +49,7 @@ public class DbDefaultConfigurration {
 
     @Bean
     @ConditionalOnBean(name = "dataSource")
-    @ConditionalOnMissingBean
+    //@ConditionalOnMissingBean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         final LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource());
@@ -64,7 +62,7 @@ public class DbDefaultConfigurration {
     }
 
     @Bean
-    @ConditionalOnMissingBean(type = "JpaTransactionManager")
+    @ConditionalOnBean(type = "JpaTransactionManager")
     JpaTransactionManager transactionManager(final EntityManagerFactory entityManagerFactory) {
         final JpaTransactionManager transactionManager = new JpaTransactionManager();
         transactionManager.setEntityManagerFactory(entityManagerFactory);
@@ -90,6 +88,7 @@ public class DbDefaultConfigurration {
         @Override
         public ConditionOutcome getMatchOutcome(ConditionContext context, AnnotatedTypeMetadata metadata) {
             ConditionMessage.Builder message = ConditionMessage.forCondition("Hibernate");
+            log.info("Hibernate started");
 
             return Arrays.stream(CLASS_NAMES)
                     .filter(className -> ClassUtils.isPresent(className, context.getClassLoader()))
